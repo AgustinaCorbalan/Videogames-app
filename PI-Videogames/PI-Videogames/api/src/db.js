@@ -48,10 +48,10 @@ const { Videogame, Genre } = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
-// un genre puede tener muchos videogames
-// a su vez videogames pertenece a genre
-Genre.belongsToMany(Videogame, { through: "Genre_Videogame" });
-Videogame.belongsToMany(Genre, { through: "Genre_Videogame" });
+// Videogames tiene muchos generos.
+// a su vez, Genre pertenece a Videogames.
+Videogame.belongsToMany(Genre, { through: "Videogame_Genre" });
+Genre.belongsToMany(Videogame, { through: "Videogame_Genre" });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
