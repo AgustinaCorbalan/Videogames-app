@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
     },
     rating: {
-      type: DataTypes.STRING,
+      type: DataTypes.FLOAT,
     },
     platform: {
       type: DataTypes.STRING,
