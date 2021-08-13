@@ -17,4 +17,16 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.post("/", async (req, res, next) => {
+  const { name } = req.body;
+  try {
+    const createdGenre = await Genre.create({
+      name,
+    });
+    res.json(createdGenre);
+  } catch (error) {
+    next({ msg: error, status: 500 });
+  }
+});
+
 module.exports = router;

@@ -1,91 +1,180 @@
 const express = require("express");
 const { Videogame, Genre } = require("../db");
 require("dotenv").config();
-const fetch = require("node-fetch");
 const router = express.Router();
 const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
 
 const { API_KEY } = process.env;
 
 router.get("/", async (req, res, next) => {
-  const apiVideogames = await axios.get(
-    // me traigo los juegos de la API (faltan 60)
-    `https://api.rawg.io/api/games?key=${API_KEY}&page=1&page_size=40`
-  );
-
-  var dbVideogames = Videogame.findAll(); // en dbVideogames me voy a guardar los juegos que se van a crear desde la db
-
-  return Promise.all([apiVideogames, dbVideogames]) // cuando se ejecuten ambas
-    .then((resultados) => {
-      // capturo el resultado, de los juegos traidos desde la api y de la db
-      var apiGames = resultados[0].data.results; // en apiGames en resultados, voy a tener en la posicion 0 a los juegos de la api
-      var dbGames = resultados[1];
-      // console.log("Estos son los videogamesApi", apiGames);
-      // console.log("Database games", dbGames);
-
-      apiGames = apiGames.map((games) => {
-        // para cada juego de la api va a devolver un array con esos atributos
-        return {
-          id: games.id,
-          name: games.name,
-          image: games.background_image,
-          released: games.released,
-          rating: games.rating,
-          platforms: games.platforms,
-          description: games.description,
-        };
-      });
-      dbGames = dbGames.map((g) => {
-        // lo mismo para la db
-        return {
-          id: g.id,
-          name: g.name,
-          image: g.image,
-          released: g.released,
-          rating: g.rating,
-          platforms: g.platforms,
-          description: g.description,
-        };
-      });
-      var allGames = apiGames.concat(dbGames); // uno los juegos tanto de la api como de db, para cuando lo solicite tenerlos todos en allGames, con esos atributos creados
-      res.send(allGames);
-      console.log(allGames);
-    })
-    .catch((error) => next(error));
+  const { name } = req.query;
+  try {
+    const db = Videogame.findAll({
+      include: {
+        model: Genre,
+        attributes: {
+          include: ["name"],
+        },
+        through: {
+          attributes: [],
+        },
+      },
+    });
+    const api1 = await axios.get(
+      `https://api.rawg.io/api/games?key=${API_KEY}&page=1&page_size=40&search=${name}`
+    );
+    const api2 = await axios.get(
+      `https://api.rawg.io/api/games?key=${API_KEY}&page=2&page_size=40&search=${name}`
+    );
+    const api3 = await axios.get(
+      `https://api.rawg.io/api/games?key=${API_KEY}&page=3&page_size=20&search=${name}`
+    );
+    Promise.all([db, api1, api2, api3]).then((resp) => {
+      const [dataBase, api1Data, api2Data, api3Data] = resp;
+      const result = dataBase.concat(
+        api1Data.data.results,
+        api2Data.data.results,
+        api3Data.data.results
+      );
+      res.send(result);
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post("/", async (req, res) => {
-  const { name, description, platform, release } = req.body;
+router.post("/", async (req, res, next) => {
   try {
+    const { name, description, platform, release, rating, genre } = req.body;
+
+    let platformString = platform.join(", ");
+    console.log(platform);
     const game = await Videogame.create({
+      id: uuidv4(),
       name,
       description,
-      platform,
+      platform: platformString,
       release,
+      rating,
     });
 
-    res.json(game);
+    const genresGame = await Genre.findAll({
+      where: {
+        name: genre,
+      },
+    });
+
+    await game.addGenre(genresGame);
+    console.log(genresGame);
+
+    const response = await Videogame.findAll({
+      include: Genre,
+    });
+    console.log(response);
+
+    res.send({ response, msg: "Videogame created successfully!" });
   } catch (error) {
-    res.send(error);
+    next(error);
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
+router.get("/", async (req, res, next) => {
   try {
-    let video = await Videogame.findByPk(id);
-    return res.json(video);
+    const games = await Videogame.findAll({
+      include: [
+        {
+          model: Genre,
+        },
+      ],
+    });
+    res.json(games);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
-// router.post("/", (req, res) => {
-//   const { name, image, genres } = req.body;
+// router.get('/:id', async (req, res, next) =>{
+//   const {id} = req.params
+//   try {
+//     const gameId = await axios.get(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`);
+
+//   }
+// })
+
+// router.get("/:id", async (req, res, next) => {
+//   const id = req.params.id;
+//   try {
+//     const db = Videogame.findAll({
+//       include: {
+//         model: Genre,
+//         attributes: {
+//           include: ["name"],
+//         },
+//         through: {
+//           attributes: [],
+//         },
+//       },
+//     });
+//     const api1 = await axios.get(
+//       `https://api.rawg.io/api/games?key=${API_KEY}&page=1&page_size=40`
+//     );
+//     const api2 = await axios.get(
+//       `https://api.rawg.io/api/games?key=${API_KEY}&page=2&page_size=40`
+//     );
+//     const api3 = await axios.get(
+//       `https://api.rawg.io/api/games?key=${API_KEY}&page=3&page_size=20`
+//     );
+
+//     let game = await Promise.all([db, api1, api2, api3]).then((resp) => {
+//       const [dataBase, api1Data, api2Data, api3Data] = resp;
+//       const result = dataBase.concat(
+//         api1Data.data.results,
+//         api2Data.data.results,
+//         api3Data.data.results
+//       );
+//       return result;
+//     });
+
+//     const games = game.find((el) => el.id === id);
+
+//     res.send(games);
+//   } catch (error) {
+//     next(error);
+//   }
+
+//   try {
+//     let video = await Videogame.findByPk(id);
+//     return res.json(video);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
+// router.get("/", async (req, res) => {
+//   const search = req.query.search;
+//   let allVideogames = await apiVideogames();
+//   if (search) {
+//     let videoName = await allVideogames.filter((game) =>
+//       game.search.toLowerCase().includes(search.toLocaleLowerCase())
+//     );
+//     videoName.length
+//       ? res.status(200).send(allVideogames)
+//       : res.status(400).send("NO ESTÁ");
+//   } else {
+//     res.status(200).send(allVideogames);
+//     console.log(allVideogames, "AAAAAAAAAAAAAAAAAA");
+//   }
+// });
+
+// router.post("/", (req, res, next) => {
+//   const { name, image, genres, platform, description } = req.body;
 
 //   Videogame.create({
 //     name,
 //     image,
+//     description,
+//     platform,
 //   })
 //     .then((createdGame) => {
 //       return createdGame.setGenres(genres);
@@ -110,13 +199,6 @@ router.get("/:id", async (req, res) => {
 //     console.error("Error");
 //   }
 // });
-
-// // router.get("/videogamesDb", (req, res) => {
-// //   return Videogame.findAll() // es mi tabla Videogame creada
-// //     .then((videogames) => {
-// //       return res.json(videogames);
-// //     });
-// // });
 
 // router.post("/", async (req, res) => {
 //   const { name, description, release, rating, platform } = req.body;
