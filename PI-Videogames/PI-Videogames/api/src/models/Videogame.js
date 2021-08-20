@@ -10,29 +10,38 @@ module.exports = (sequelize) => {
   // Fecha de lanzamiento
   // Rating
   // Plataformas *
-  sequelize.define("videogame", {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: UUIDV4,
+  sequelize.define(
+    "videogame",
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: UUIDV4,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      release: {
+        type: DataTypes.STRING,
+      },
+      rating: {
+        type: DataTypes.FLOAT,
+      },
+      platform: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      mine: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    release: {
-      type: DataTypes.STRING,
-    },
-    rating: {
-      type: DataTypes.FLOAT,
-    },
-    platform: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  });
+    { timestamps: false }
+  );
 };
