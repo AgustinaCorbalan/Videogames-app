@@ -1,0 +1,13 @@
+.landing {
+  color: ivory;
+  background: url("https://cdn.pixabay.com/photo/2014/01/31/14/14/in-background-255499_960_720.jpg");
+}
+.button {
+  background: url("https://besthqwallpapers.com/Uploads/1-3-2021/158249/thumb2-sony-playstation-joystick-macro-bokeh-modern-devices-game-console.jpg");
+  background-size: cover;
+  height: 200px;
+  width: 290px;
+  border-radius: 20px;
+  padding: 15px 0 8px 10px;
+  margin: 270px;
+}

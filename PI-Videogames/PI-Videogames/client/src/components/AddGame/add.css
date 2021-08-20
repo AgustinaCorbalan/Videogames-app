@@ -1,0 +1,23 @@
+.check {
+  margin-left: 25px;
+  border: 1px solid blue;
+}
+
+.checkbox {
+  display: -webkit-inline-flex;
+  margin-left: 25px;
+  height: fit-content;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-family: arial;
+}
+
+.body {
+  background: url("https://www.xtrafondos.com/wallpapers/resized/mario-bros-en-texturas-13.jpg?s=large");
+  background: cover;
+}
+
+.create {
+  color: white;
+}

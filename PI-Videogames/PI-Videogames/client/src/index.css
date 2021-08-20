@@ -1,13 +1,14 @@
 body {
+  background: url("https://media.istockphoto.com/vectors/start-neon-sign-vector-design-template-start-race-neon-text-light-vector-id990814858?b=1&k=6&m=990814858&s=612x612&w=0&h=cYgr0nGQ28F-8jLUh79zQ1AiW_JD5z5JvF71Z47i9Ls=");
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }

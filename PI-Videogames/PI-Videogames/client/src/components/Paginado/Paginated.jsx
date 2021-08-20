@@ -1,0 +1,27 @@
+import React from "react";
+import "./paginated.css";
+
+export default function Paginated({ gamePerPage, allGames, paged }) {
+  let pageCount = [];
+
+  for (let i = 1; i <= Math.ceil(allGames / gamePerPage); i++) {
+    pageCount.push(i);
+  }
+
+  return (
+    <nav className="navPag">
+      <div className="center"></div>
+      <ul className="pagination">
+        {pageCount &&
+          pageCount.map((number) => (
+            <li className="page-item">
+              <button className="page-link" onClick={() => paged(number)}>
+                {number}
+              </button>
+              ;
+            </li>
+          ))}
+      </ul>
+    </nav>
+  );
+}

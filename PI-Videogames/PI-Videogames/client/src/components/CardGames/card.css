@@ -1,0 +1,46 @@
+.card {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  margin-top: 20px;
+  flex-wrap: inherit;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: url("https://st3.depositphotos.com/2377713/i/600/depositphotos_354517754-stock-photo-gray-brick-background-dark-brick.jpg");
+  border-radius: 50px;
+}
+
+.container {
+  flex-grow: inherit;
+  flex-direction: column;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+  margin-top: 20px;
+}
+
+.card:hover {
+  transform: scale(1.1);
+}
+
+.card-header {
+  width: 100%;
+  height: fit-content;
+  text-align: center;
+  color: #000000;
+}
+
+.img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50px;
+}
+
+.rating {
+  background: black;
+  color: white;
+  font-size: 18px;
+  font-family: arial;
+}

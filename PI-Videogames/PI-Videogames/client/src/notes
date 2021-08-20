@@ -1,0 +1,42 @@
+en home, primero defino estados locales, 
+1ero state con paginaactual, y el seteado = useState(1) seteado en 1 por que siempre arranco en la primer pagina. guardame en un state local la pagina actual
+otro state, juegosporpagina y seteado = useState (15) cantidad de juegos que renderiza por pagina cuantas cards
+declaro const indicedelultimojuego(indexOfLastGame) que va a ser = paginaactual * juegosporpagina (cantidad de juegos por pagina) //15
+declaro otra const indicedelprimerjuego(indexOfFirstGame) = indicedelultimojuego - juegosporpagina //0
+declaro otra const (currrentGames) que va a tener los juegos que están en la pagina actual
+declaro una const que guarde todos los juegos que voy a tener en cada pagina:
+ que va ser el arreglo del GlobalState y le hago un slice(no incluye el segundo param)(agarra un array y toma una porcion dependiendo del param que le pase)
+para que agarre solamente el indice del primer game y el indice del ultimo game.
+ entre el indice del primergame y el indice del ultimoGame. 
+currentGames = allGames.slice(indexOfFirstGame, indexOfLastGame)
+ejemplo : 1er pagina ----- indexFirstGame(0)-------indexLastGame(15) quiero que en la pagina 1 me devuelva desde el indice del primer game hasta el indice del ultimo game:
+devuelve un array que va a tomar desde el 0 hasta el 15. osea me renderiza el game [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
+declaro una const Paginado al que le paso un numero de la pagina y seteo la paginaactual en ese numero de pagina
+const paginado = (numberPage) => { // me va ayudar al renderizado
+setpaginaActual(numberPage)
+} 
+
+Genero un componente Paginado, donde importo React. 
+
+export default function Paged({juegosporpagina, allGames, paged}){
+    const pageNum = []; declaro arreglo vacio 
+
+    recorro: y tomo el numero redondeado hacia arriba que resulta de dividir todos los juegos por los juegos por pagina
+    y a ese resultado lo voy a pushear a pageNum
+    for (let i=0; i<=Math.ceil(allGames/juegosporpagina); i++){ 
+        pageNum.push(i+1)
+    }
+    devuelvo ( // renderizo los numeros de paginas
+        un nav
+         una lista
+         {
+             pregunto si tiene array pageNum y mapeo y devolveme por ese array cada uno de los num que me devuelva el paginado => (
+                 un li le paso un link que cuando haga click le paso mi paginado con el numero de paginas
+                 con un OnClick={() => paged(num)}>{y le paso como prop num para renderizarlo}
+             )
+         }
+    )
+}
+
+

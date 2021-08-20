@@ -1,0 +1,16 @@
+.color {
+  color: aliceblue;
+}
+
+.img {
+  width: 500px;
+  height: 350px;
+  border-radius: 50px;
+}
+
+.rel {
+  background: black;
+  size: initial;
+  margin-top: auto;
+  font-size: medium;
+}
