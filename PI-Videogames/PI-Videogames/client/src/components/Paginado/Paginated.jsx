@@ -14,7 +14,7 @@ export default function Paginated({ gamePerPage, allGames, paged }) {
       <ul className="pagination">
         {pageCount &&
           pageCount.map((number) => (
-            <li className="page-item">
+            <li key={number} className="page-item">
               <button className="page-link" onClick={() => paged(number)}>
                 {number}
               </button>

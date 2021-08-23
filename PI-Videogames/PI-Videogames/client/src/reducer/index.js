@@ -1,9 +1,11 @@
 const initialState = {
   videogames: [],
-  genres: [],
   allVideogames: [],
+  genres: [],
   detail: [],
-  games: [],
+  filterGenre: [],
+  newGame: [],
+  page: 1,
 };
 
 function reducer(state = initialState, action) {
@@ -11,17 +13,21 @@ function reducer(state = initialState, action) {
     case "GET_GAMES":
       return {
         ...state,
-        videogames: action.payload, // en el state videogames, manda todo lo que mande la action GET_GAMES
+        page: 1,
+        videogames: action.payload,
+        filterGenre: action.payload,
         allVideogames: action.payload,
       };
     case "GET_GENRES":
       return {
         ...state,
+        page: 1,
         genres: action.payload,
       };
     case "GET_NAMES":
       return {
         ...state,
+        page: 1,
         videogames: action.payload,
       };
     case "GAME_DETAIL":
@@ -31,36 +37,41 @@ function reducer(state = initialState, action) {
       };
     case "POST_GAME":
       return {
-        // devuelve el state como está por que voy a crear en una ruta nueva
         ...state,
+        newGame: action.payload,
       };
+
     case "FILTER_GENRES":
-      const allGames = state.allVideogames; // me traigo el estado de videogames que va a tener todos los juegos
-      const genresFilter =
+      const genreFilter =
         action.payload === "All"
-          ? allGames
-          : allGames.filter((g) => g.genres.includes(action.payload));
-      console.log(genresFilter);
-      console.log(action.payload);
-      // entra a allgames y filtra por el payload que te llega(cada genre del back)
+          ? state.filterGenre
+          : state.filterGenre.filter((e) => {
+              for (let i = 0; i < e.genres.length; i++) {
+                if (e.genres[i].name === action.payload) {
+                  return true;
+                }
+              }
+              return undefined;
+            });
       return {
         ...state,
-        games: genresFilter,
+        page: 1,
+        videogames: genreFilter,
       };
 
     case "FILTER_CREATED":
       const filtered =
         action.payload === "created"
-          ? allGames.filter((m) => m.mine)
-          : allGames.filter((m) => !m.mine);
+          ? state.allVideogames.filter((m) => m.mine)
+          : state.allVideogames.filter((m) => !m.mine);
       return {
         ...state,
-        videogames: action.payload === "All" ? allGames : filtered,
+        videogames: action.payload === "All" ? state.allVideogames : filtered,
       };
     case "ORDER_NAME":
-      const orderName =
+      let sortedGames =
         action.payload === "asc"
-          ? state.videogames.sort(function (a, b) {
+          ? [...state.allVideogames].sort(function (a, b) {
               if (a.name > b.name) {
                 return 1;
               }
@@ -69,7 +80,7 @@ function reducer(state = initialState, action) {
               }
               return 0;
             })
-          : state.videogames.sort(function (a, b) {
+          : [...state.allVideogames].sort(function (a, b) {
               if (a.name > b.name) {
                 return -1;
               }
@@ -80,7 +91,22 @@ function reducer(state = initialState, action) {
             });
       return {
         ...state,
-        videogames: orderName,
+        videogames: sortedGames,
+      };
+    case "ORDER_RATING":
+      const ratingFilter =
+        action.payload === "max"
+          ? [...state.allVideogames].sort((b, a) => a.rating - b.rating)
+          : [...state.allVideogames].sort((b, a) => b.rating - a.rating);
+      return {
+        ...state,
+
+        videogames: ratingFilter,
+      };
+    case "PAGE":
+      return {
+        ...state,
+        page: action.payload,
       };
     default:
       return state;

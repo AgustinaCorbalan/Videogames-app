@@ -73,12 +73,23 @@ export function orderByRating(payload) {
 }
 
 export function postGame(payload) {
-  return async function () {
-    const response = await axios.post(
-      "http://localhost:3001/videogames",
-      payload
-    );
-    return response;
+  try {
+    return async function (dispatch) {
+      const response = await axios.post(
+        "http://localhost:3001/videogames",
+        payload
+      );
+      return dispatch({ type: "POST_GAME", payload: response.data });
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function pageUno(payload) {
+  return {
+    type: "PAGE",
+    payload,
   };
 }
 
@@ -88,16 +99,7 @@ export function gameDetail(id) {
       const response = await axios.get(
         "http://localhost:3001/videogames/" + id
       );
-      // var detail = {
-      //   image: response.data.image,
-      //   //name: response.data.name,
-      //   description: response.data.description,
-      //   release: response.data.release,
-      //   genre: response.data.genre && response.data.genre.map((g) => g),
-      //   platform: response.data.platform.map((p) => p),
-      //   rating: response.data.rating,
-      // };
-      // console.log(detail, "ACAAAAA");
+
       return dispatch({
         type: "GAME_DETAIL",
         payload: response.data,

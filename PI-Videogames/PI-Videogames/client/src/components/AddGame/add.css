@@ -1,10 +1,15 @@
+/* .deco {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  grid-template-rows: repeat(4, 25%);
+  background-color: tomato;
+} */
 .check {
   margin-left: 25px;
   border: 1px solid blue;
 }
 
 .checkbox {
-  display: -webkit-inline-flex;
   margin-left: 25px;
   height: fit-content;
   text-align: center;
@@ -19,5 +24,24 @@
 }
 
 .create {
+  color: white;
+  /* display: grid;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 1; */
+}
+
+.name {
+  color: white;
+}
+
+.description {
+  color: white;
+}
+
+.release {
+  color: white;
+}
+.strong {
   color: white;
 }
