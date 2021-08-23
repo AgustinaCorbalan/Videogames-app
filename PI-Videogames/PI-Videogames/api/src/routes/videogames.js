@@ -1,5 +1,5 @@
 const express = require("express");
-const { Videogame, Genre } = require("../db");
+const { Videogame, Genre, videogame_genre } = require("../db");
 require("dotenv").config();
 const router = express.Router();
 const axios = require("axios");
@@ -12,7 +12,7 @@ router.get("/:id", async (req, res) => {
   if (id.length > 10) {
     const dbGame = await Videogame.findOne({
       where: { id: id },
-      include: [{ model: Genre }],
+      include: Genre,
     });
 
     return res.status(200).json(dbGame);
@@ -70,33 +70,20 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const { name, description, platform, release, rating, genre, mine } =
+    const { name, description, platform, release, rating, genres, image } =
       req.body;
-
-    let platforms = platform.join(",");
+    console.log(req.body);
     const game = await Videogame.create({
       id: uuidv4(),
-      name,
-      description,
-      platform: platforms,
-      release,
-      rating,
-      mine,
+      name: name,
+      description: description,
+      platform: platform,
+      release: release,
+      rating: rating,
+      image: image,
     });
-
-    const genresGame = await Genre.findAll({
-      where: {
-        name: genre,
-      },
-    });
-
-    await game.addGenre(genresGame);
-
-    const response = await Videogame.findAll({
-      include: Genre,
-    });
-
-    res.send({ response, msg: "Videogame created successfully!" });
+    await game.addGenre(genres);
+    return res.json(game);
   } catch (error) {
     next(error);
   }

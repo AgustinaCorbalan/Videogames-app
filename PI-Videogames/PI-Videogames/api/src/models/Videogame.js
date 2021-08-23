@@ -18,6 +18,9 @@ module.exports = (sequelize) => {
         primaryKey: true,
         defaultValue: UUIDV4,
       },
+      image: {
+        type: DataTypes.STRING,
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -33,7 +36,7 @@ module.exports = (sequelize) => {
         type: DataTypes.FLOAT,
       },
       platform: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
       },
       mine: {
